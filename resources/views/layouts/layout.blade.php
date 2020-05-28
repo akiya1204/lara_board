@@ -38,7 +38,10 @@
                         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('list') }}">{{ __('shop') }}</a>
-                            </li>   
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cart') }}">{{ __('cart') }}</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('contact.index') }}">{{ __('contact') }}</a>
                             </li>
