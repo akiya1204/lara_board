@@ -47,10 +47,13 @@ class PostsController extends Controller
             $query = Post::query();
             $posts = $query
                         ->join('post_categories', 'post_categories.ctg_id', '=', 'posts.ctg_id')
+                        ->join('users', 'users.id', '=', 'posts.user_id')
                         ->where('title', 'like', '%' .$request->keyword . '%')
                         ->orWhere('body', 'like', '%' .$request->keyword . '%')
                         ->orWhere('category_name', 'like', '%' .$request->keyword . '%')
+                        ->orWhere('name', 'like', '%' .$request->keyword . '%')
                         ->orderBy('posts.created_at', 'desc')
+                        ->select(\DB::raw('posts.*,post_categories.*,users.name'))
                         ->paginate(10);
             $category = postCategory::all();
         } else {
