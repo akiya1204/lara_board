@@ -16,9 +16,9 @@
                                 <ul>
                                     <li class="image"><img src="{{ asset('/img/' . $item->image) }}" alt="{{$item->item_name}}"></li>
                                     <li class="name">{{$item->item_name}}</li>
-                                    <li class="price">&yen;{{ number_format($item->price, 0) }}</li>
-                                    <li class="num">{{ $item->num }}個</li>
-                                    <li><a href="{{ route('delete', ['id' => $item->crt_id]) }}">削除</a></li>
+                                    <li class="price">&yen;{{ number_format($item->total_price, 0) }}</li>
+                                    <li class="num">{{ $item->total_num }}個</li>
+                                    <li><a href="{{ route('delete', ['item_id' => $item->item_id , 'customer_id' => $item->customer_id]) }}">削除</a></li>
                                 </ul>
                             </div>
                         @endforeach

@@ -43,7 +43,7 @@
                                 <a class="nav-link" href="{{ route('contact.index') }}">{{ __('contact') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./home">{{ __('mypage') }}</a>
+                                <a class="nav-link" href="{{ route('home') }}">{{ __('mypage') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('logout') }}"

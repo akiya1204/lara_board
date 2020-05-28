@@ -3,31 +3,26 @@
 @section('content')
     <div class="container mt-4">
         <div class="border p-4">
-            <div class="mb-4 text-right">
-                <a class="btn btn-primary" href="{{ route('posts.edit', ['post' => $post]) }}">
-                    編集する
-                </a>
+            <div class="show_flex">
+                <h1 class="h5 mb-4">
+                    {{ $post->title }}
+                </h1>
+                @if($post->user_id === $user_id)
+                <div class="mb-4 text-right">
+                    <a class="btn btn-primary" href="{{ route('posts.edit', ['post' => $post]) }}">
+                        編集する
+                    </a>
+                </div>
+                @endif
             </div>
-            <form 
-                {{--  style="display: inline-block;"  --}}
-                action="{{ route('posts.destroy', ['post' => $post]) }}" 
-                method="post"
-                class="text-right"
-            >
-                @csrf
-                @method('DELETE')
-
-                <button class="btn btn-danger">削除する</button>
-            </form>
-            <h1 class="h5 mb-4">
-                {{ $post->title }}
-            </h1>
-    
             <p>
                 {!! nl2br(e($post->body)) !!}
             </p>
+            @if (!empty($post->image))
+                <img src="{{ asset('storage/image/'.$post->image) }}" class="img-fluid img-thumbnail col-6" alt="">
+            @endif
 
-            <form class="mb-4" action="{{ route('comments.store') }}" method="post">
+            <form class="mb-4 mt-4" action="{{ route('comments.store') }}" method="post">
                 @csrf
 
                 <input 
@@ -38,7 +33,7 @@
 
                 <div class="form-group">
                     <label for="body">
-                        本文
+                        コメント内容
                     </label>
 
                     <textarea 
@@ -67,14 +62,24 @@
                     コメント
                 </h2>
     
-                @forelse ($post->comments as $comment)
+                @forelse ($post->comments->where('delete_flg',0) as $comment)
                     <div>
-                        <time class="border-top p-4">
-                            {{ $comment->created_at->format('Y.m.d H:i') }}
-                        </time>
+                        <p>
+                            {{ $comment->user->name }}
+                        </p>
                         <p>
                             {!! nl2br(e($comment->body)) !!}
                         </p>
+                        <p class="">
+                            {{ $comment->created_at->format('Y.m.d H:i') }}
+                        </p>
+                        @if($comment->user_id === $user_id)
+                        <p>
+                            <a class="btn btn-primary" href="{{ route('comments.edit', ['comment' => $comment, 'post' => $post]) }}">
+                                編集する
+                            </a>
+                        </p>
+                        @endif
                     </div>
                 @empty
                     <p>コメントはまだありません。</p>

@@ -15,6 +15,7 @@
                                 <li class="name">{{$item->item_name}}</li>
                                 <li class="price">&yen;{{ number_format($item->price, 0) }}</li>
                                 <li class="num">{{ $item->num }}個</li>
+                                <li class="day">購入日 : {{ $item->created_at }}</li>
                             </ul>
                         </div>
                     @endforeach

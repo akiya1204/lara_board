@@ -18,7 +18,7 @@ class CreateCompletesTable extends Migration
             $table->tinyInteger('customer_id');
             $table->tinyInteger('item_id');
             $table->tinyInteger('num');
-            $table->tinyInteger('delete_flg');
+            $table->tinyInteger('delete_flg')->default(0);
             $table->timestamps();
         });
     }

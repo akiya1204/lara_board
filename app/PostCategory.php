@@ -4,14 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class cart extends Model
+class PostCategory extends Model
 {
     protected $fillable = [
-        'crt_id',
-        'customer_id',
-        'item_id',
-        'num',
+        'ctg_id',
+        'category_name',
         'delete_flg',
-        'price',
     ];
 }

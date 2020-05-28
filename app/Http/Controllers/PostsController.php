@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Comment;
+use App\PostCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
 {
@@ -12,30 +15,100 @@ class PostsController extends Controller
         // $this->middleware('auth');
     } 
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::orderBy('created_at', 'desc')->paginate(10);
-        // dd($posts->comments);
+        if (!empty($request->id) === true) {
+            $query = Post::query();
 
-        return view('posts.index', ['posts' => $posts]);
+            $posts = $query
+                        ->join('post_categories', 'post_categories.ctg_id', '=', 'posts.ctg_id')
+                        ->where('posts.ctg_id', $request->id)
+                        ->orderBy('posts.created_at', 'desc')
+                        ->paginate(10);
+            $category = PostCategory::all();
+        } else {
+            $query = Post::query();
+            $posts = $query
+                        ->join('post_categories', 'post_categories.ctg_id', '=', 'posts.ctg_id')
+                        ->orderBy('posts.created_at', 'desc')
+                        ->paginate(10);
+            $category = PostCategory::all();
+        }
+
+        return view('posts.index', [
+            'posts' => $posts,
+            'category' => $category,
+        ]);
+    }
+    
+    public function search(Request $request)
+    {
+        if (!empty($request->keyword) === true) {
+            $query = Post::query();
+            $posts = $query
+                        ->join('post_categories', 'post_categories.ctg_id', '=', 'posts.ctg_id')
+                        ->where('title', 'like', '%' .$request->keyword . '%')
+                        ->orWhere('body', 'like', '%' .$request->keyword . '%')
+                        ->orWhere('category_name', 'like', '%' .$request->keyword . '%')
+                        ->orderBy('posts.created_at', 'desc')
+                        ->paginate(10);
+            $category = postCategory::all();
+        } else {
+            $query = Post::query();
+            $posts = $query
+                        ->join('post_categories', 'post_categories.ctg_id', '=', 'posts.ctg_id')
+                        ->orderBy('posts.created_at', 'desc')
+                        ->paginate(10);
+            $category = PostCategory::all();
+        }
+
+        return view('posts/index',[
+            'posts' => $posts,
+            'category' => $category,
+        ]);
     }
 
     public function create()
     {
-            return view('posts.create');
+        $category = PostCategory::all();
+        // dd($category);
+
+        return view('posts.create', ['category' => $category]);
     }
 
     public function store(Request $request)
     {
-        $params = $request->validate([
-            'body' => 'required|max:2000',
-        ]);
         $user = \Auth::user();
+        $params = $request->validate([
+            'title' => 'required|max:50',
+            'body' => 'required|max:2000',
+            'ctg_id' => 'integer',
+            'image' => 'file|image',
+        ]);
 
-        $params['user_id'] = $user->id;
-        $params['user_name'] = $user->name;
+        if (array_key_exists('image',$params)) {
+            $post = new Post;
 
-        Post::create($params);
+            $post->user_id = $user->id;
+            $post->ctg_id = $request->ctg_id;
+            $post->body = $request->body;
+            $post->title = $request->title;
+
+            $filename = $request->file('image')->store('public/image');
+
+            $post->image = basename($filename);
+
+            $post->save();
+        } else {
+            $post = new Post;
+
+            $post->user_id = $user->id;
+            $post->ctg_id = $request->ctg_id;
+            $post->body = $request->body;
+            $post->title = $request->title;
+
+            $post->save();
+        }
 
         return redirect()->route('top');
     }
@@ -43,17 +116,18 @@ class PostsController extends Controller
     public function show($post_id)
     {
         $post = Post::findOrFail($post_id);
-
-        // dd($post);
+        $user = Auth::user();
+        $user_id = $user->id;
 
         return view('posts.show', [
             'post' => $post,
+            'user_id' => $user_id
         ]);
     }
 
     public function edit($post_id)
     {
-        $post = Post::findOrFail($post_id);
+        $post = Post::findOrFail($post_id);                      
 
         return view('posts.edit', [
             'post' => $post,
@@ -71,17 +145,5 @@ class PostsController extends Controller
         $post->fill($params)->save();
     
         return redirect()->route('posts.show', ['post' => $post]);
-    }
-
-    public function destroy($post_id)
-    {
-        $post = Post::findOrFail($post_id);
-
-        \DB::transaction(function () use ($post) {
-            $post->comments()->delete();
-            $post->delete();
-        });
-
-        return redirect()->route('top');
     }
 }

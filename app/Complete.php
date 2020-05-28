@@ -12,5 +12,11 @@ class Complete extends Model
         'item_id',
         'num',
         'delete_flg',
+        'price',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

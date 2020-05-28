@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemTable extends Migration
+class CreatePostCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateItemTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
-            $table->id('item_id');
-            $table->string('item_name');
-            $table->text('detail');
-            $table->decimal('price');
-            $table->string('image');
-            $table->tinyInteger('ctg_id');
+        Schema::create('post_categories', function (Blueprint $table) {
+            $table->id('ctg_id');
+            $table->string('category_name');
             $table->tinyInteger('delete_flg')->default(0);
             $table->timestamps();
         });
@@ -32,6 +28,6 @@ class CreateItemTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('post_categories');
     }
 }

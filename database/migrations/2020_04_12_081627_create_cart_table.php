@@ -17,7 +17,7 @@ class CreateCartTable extends Migration
             $table->id('crt_id');
             $table->unsignedInteger('customer_id');
             $table->unsignedInteger('item_id');
-            $table->tinyInteger('num')->default(0);
+            $table->tinyInteger('num')->default(1);
             $table->tinyInteger('delete_flg')->default(0);
             $table->timestamps();
         });

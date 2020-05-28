@@ -20,8 +20,11 @@ Route::get('/', 'PostsController@index')->name('top');
 //   });
 
 Route::resource('/posts', 'PostsController');
+Route::get('posts/category/{id?}', 'PostsController@index')->name('post.category');
+Route::post('posts/search', 'PostsController@search')->name('post.search');
 Route::get('contact', 'ContactController@index')->name('contact.index');
 Route::get('list', 'ShoppingController@index');
+Route::post('search', 'ShoppingController@search')->name('search');
 Route::get('list/{id?}', 'ShoppingController@index')->name('list');
 Route::get('list/detail/{id}', 'ShoppingController@detail')->name('detail');
 Route::post('contact/confirm', 'ContactController@confirm')->name('contact.confirm');
@@ -32,11 +35,12 @@ Route::get('/user', 'UserController@index')->name('user.index')->middleware('aut
 Route::get('/user/userEdit', 'UserController@userEdit')->name('user.userEdit')->middleware('auth');
 Route::post('/user/userEdit', 'UserController@userUpdate')->name('user.userUpdate')->middleware('auth');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::resource('/posts', 'PostsController', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
-    Route::resource('comments', 'CommentsController', ['only' => ['store']]);
+    Route::resource('/posts', 'PostsController', ['only' => ['create', 'store', 'edit', 'update', 'destroy','show']]);
+    Route::resource('comments', 'CommentsController', ['only' => ['store','edit','update','destroy']]);
+    Route::get('comments/delete', 'CommentsController@delete')->name('comment_delete');
     Route::get('cart', 'ShoppingController@cart')->name('cart');
     Route::get('cart/delete/{id?}', 'ShoppingController@delete')->name('delete');
     Route::get('cart/complete', 'ShoppingController@complete')->name('complete');
