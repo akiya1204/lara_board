@@ -69,7 +69,7 @@ class ShoppingController extends Controller
             $query->where('carts.delete_flg', 0);
             $cart_items = $query
                         ->join('items', 'carts.item_id', '=', 'items.item_id')
-                        ->select(\DB::raw("sum(carts.price) as total_price,sum(carts.num) as total_num,items.item_name,items.image,carts.customer_id,carts.item_id"))
+                        ->select(\DB::raw("sum(carts.price) as total_price,sum(carts.num) as total_num,items.item_name,items.image,carts.customer_id,carts.item_id,carts.crt_id"))
                         ->groupBy('items.item_name')
                         ->get();
             $cart_price = collect($cart_items)->sum('total_price');
@@ -131,11 +131,13 @@ class ShoppingController extends Controller
     public function complete() {
         $user = Auth::user();
         $query = Cart::query();
-        $query->where('customer_id', $user->id);
-        $query->where('delete_flg', 0);
+        $query
+            ->where('customer_id', $user->id)
+            ->where('delete_flg', 0)
+            ->select('customer_id','item_id','num','price','delete_flg');
         $complete = $query->get()->toArray();
         // dd($complete);
-        Complete::create($complete[0]);
+        \DB::table('completes')->insert($complete);
 
         return redirect()->route('complete2');
     }
@@ -151,11 +153,32 @@ class ShoppingController extends Controller
 
     public function history() {
         $user = Auth::user();
-        $history_items = Complete::select(\DB::raw('completes.*,items.image'))->join('items', 'completes.item_id', '=', 'items.item_id')->where('customer_id', $user->id)->get();
+        $history_items = Complete::select(\DB::raw('completes.*,items.image,items.item_name'))->join('items', 'completes.item_id', '=', 'items.item_id')->where('customer_id', $user->id)->orderBy('created_at', 'desc')->get();
 
         return view('shopping/history' , [
             'history_items' => $history_items,
         ]);
+    }
+
+    public function change_num(Request $request) {
+        $user = Auth::user();
+        $query = Cart::query();
+
+        $item_detail = $query
+                        ->where('crt_id', $request->crt_id)
+                        ->select('price','num')
+                        ->get()
+                        ->toArray();
+
+        $update_price = ($item_detail[0]['price'] / $item_detail[0]['num']) * $request->change_num;
+
+        $query->where('crt_id', $request->crt_id);
+        $query->update([
+            'num' => $request->change_num,
+            'price' => $update_price
+        ]);
+
+        return redirect()->route('cart');
     }
 }
 

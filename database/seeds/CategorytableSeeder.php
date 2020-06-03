@@ -22,7 +22,7 @@ class CategorytableSeeder extends Seeder
             ],
             [
                 'ctg_id' => 3,
-                'category_name' => 'コントローラー',
+                'category_name' => '周辺機器',
             ],
         ]);
     }

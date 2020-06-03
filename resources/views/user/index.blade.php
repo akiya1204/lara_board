@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.layout')
 @section('title','ユーザー情報')
 @section('content')
 <div class="container">
@@ -20,5 +20,8 @@
     </tr>
   </tbody>
   </table>
+  <a href="{{ route('home') }}" class="btn btn-primary">
+    戻る
+  </a>
 </div>  
 @endsection

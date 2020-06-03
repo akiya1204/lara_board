@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.layout')
 @section('title','ユーザー情報変更')
 
 @section('content')

@@ -9,9 +9,10 @@
                 <p>まだ何も購入していません。</p>
                 @else
                     @foreach ($history_items as $item)
+                    {{-- {{ dd($item) }} --}}
                         <div class="item">
                             <ul>
-                                <li class="image"><img src="{{ asset('/img/' . $item->image) }}" alt="{{$item->item_name}}"></li>
+                                <li class="image"><a href="{{ route('detail', ['id' => $item->item_id]) }}"><img src="{{ asset('/img/' . $item->image) }}" alt="{{$item->item_name}}"></a></li>
                                 <li class="name">{{$item->item_name}}</li>
                                 <li class="price">&yen;{{ number_format($item->price, 0) }}</li>
                                 <li class="num">{{ $item->num }}個</li>

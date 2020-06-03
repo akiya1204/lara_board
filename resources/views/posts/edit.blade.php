@@ -46,6 +46,11 @@
                         <button type="submit" class="btn btn-primary">
                             更新
                         </button>
+                        @if ($user_role === 'owner')
+                        <a href="{{ route('posts_delete', ['post' => $post]) }}" class="btn btn-danger">
+                            削除
+                        </a>
+                        @endif
                     </div>
                 </fieldset>
             </form>

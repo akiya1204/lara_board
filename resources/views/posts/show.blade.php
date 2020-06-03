@@ -7,7 +7,7 @@
                 <h1 class="h5 mb-4">
                     {{ $post->title }}
                 </h1>
-                @if($post->user_id === $user_id)
+                @if($post->user_id === $user_id or $user_role === 'owner')
                 <div class="mb-4 text-right">
                     <a class="btn btn-primary" href="{{ route('posts.edit', ['post' => $post]) }}">
                         編集する
@@ -51,6 +51,9 @@
                 </div>
 
                 <div class="mt-4">
+                    <a href="{{ route('top') }}"　class="btn btn-primary">
+                        戻る
+                    </a>
                     <button type="submit" class="btn btn-primary">
                         コメントする
                     </button>
@@ -73,7 +76,7 @@
                         <p class="">
                             {{ $comment->created_at->format('Y.m.d H:i') }}
                         </p>
-                        @if($comment->user_id === $user_id)
+                        @if($comment->user_id === $user_id or $user_role === 'owner')
                         <p>
                             <a class="btn btn-primary" href="{{ route('comments.edit', ['comment' => $comment, 'post' => $post]) }}">
                                 編集する

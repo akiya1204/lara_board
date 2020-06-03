@@ -41,9 +41,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/posts', 'PostsController', ['only' => ['create', 'store', 'edit', 'update', 'destroy','show']]);
     Route::resource('comments', 'CommentsController', ['only' => ['store','edit','update','destroy']]);
     Route::get('comments/delete', 'CommentsController@delete')->name('comment_delete');
+    Route::get('post/delete', 'PostsController@delete')->name('posts_delete');
     Route::get('cart', 'ShoppingController@cart')->name('cart');
     Route::get('cart/delete/{id?}', 'ShoppingController@delete')->name('delete');
     Route::get('cart/complete', 'ShoppingController@complete')->name('complete');
     Route::get('cart/complete2', 'ShoppingController@complete2')->name('complete2');
     Route::get('cart/history', 'ShoppingController@history')->name('history');
+    Route::post ('cart/change', 'ShoppingController@change_num')->name('change_num');
 });
